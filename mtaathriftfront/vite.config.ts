@@ -4,6 +4,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   base: '/Mtaathrift/',
   plugins: [react()],
+  //root: "mtaathriftfront",
   server: {
     port: 5173,
   },

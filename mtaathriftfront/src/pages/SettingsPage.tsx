@@ -4,6 +4,7 @@ import "../App.css";
 
 type Props = {
   user: User;
+  onLogout?: () => void; // ✅ added optional prop to fix TS error
 };
 
 type Settings = {
@@ -78,7 +79,6 @@ export default function SettingsPage({ user }: Props) {
       [name]: type === "checkbox" ? checked : value,
     }));
 
-    // Reset save badge when user changes something after saving
     setSaveStatus("idle");
   };
 
@@ -91,7 +91,6 @@ export default function SettingsPage({ user }: Props) {
     try {
       localStorage.setItem(key, JSON.stringify(settings));
       setSaveStatus("saved");
-      // Reset badge after 2.5 s
       setTimeout(() => setSaveStatus("idle"), 2500);
     } catch {
       setSaveStatus("error");
@@ -120,7 +119,12 @@ export default function SettingsPage({ user }: Props) {
 
             <div className="setting-group">
               <label htmlFor="colorScheme">Theme</label>
-              <select id="colorScheme" name="colorScheme" value={settings.colorScheme} onChange={handleChange}>
+              <select
+                id="colorScheme"
+                name="colorScheme"
+                value={settings.colorScheme}
+                onChange={handleChange}
+              >
                 <option value="light">Light</option>
                 <option value="dark">Dark</option>
                 <option value="multicolor">Multicolor</option>
@@ -129,7 +133,12 @@ export default function SettingsPage({ user }: Props) {
 
             <div className="setting-group">
               <label htmlFor="accentColor">Accent Color</label>
-              <select id="accentColor" name="accentColor" value={settings.accentColor} onChange={handleChange}>
+              <select
+                id="accentColor"
+                name="accentColor"
+                value={settings.accentColor}
+                onChange={handleChange}
+              >
                 <option value="green">Green</option>
                 <option value="orange">Orange</option>
                 <option value="blue">Blue</option>
@@ -142,7 +151,12 @@ export default function SettingsPage({ user }: Props) {
 
             <div className="setting-group">
               <label htmlFor="textSize">Text Size</label>
-              <select id="textSize" name="textSize" value={settings.textSize} onChange={handleChange}>
+              <select
+                id="textSize"
+                name="textSize"
+                value={settings.textSize}
+                onChange={handleChange}
+              >
                 <option value="small">Small</option>
                 <option value="medium">Medium</option>
                 <option value="large">Large</option>
@@ -156,7 +170,12 @@ export default function SettingsPage({ user }: Props) {
 
             <div className="setting-group">
               <label htmlFor="sidebarStyle">Sidebar Style</label>
-              <select id="sidebarStyle" name="sidebarStyle" value={settings.sidebarStyle} onChange={handleChange}>
+              <select
+                id="sidebarStyle"
+                name="sidebarStyle"
+                value={settings.sidebarStyle}
+                onChange={handleChange}
+              >
                 <option value="default">Default</option>
                 <option value="compact">Compact</option>
                 <option value="expanded">Expanded</option>
@@ -167,7 +186,12 @@ export default function SettingsPage({ user }: Props) {
 
             <div className="setting-group">
               <label htmlFor="postLayout">Post Layout</label>
-              <select id="postLayout" name="postLayout" value={settings.postLayout} onChange={handleChange}>
+              <select
+                id="postLayout"
+                name="postLayout"
+                value={settings.postLayout}
+                onChange={handleChange}
+              >
                 <option value="grid">Grid</option>
                 <option value="list">List</option>
                 <option value="masonry">Masonry</option>
@@ -182,14 +206,24 @@ export default function SettingsPage({ user }: Props) {
 
             <div className="setting-group checkbox-group">
               <label>
-                <input type="checkbox" name="notificationsEnabled" checked={settings.notificationsEnabled} onChange={handleChange} />
+                <input
+                  type="checkbox"
+                  name="notificationsEnabled"
+                  checked={settings.notificationsEnabled}
+                  onChange={handleChange}
+                />
                 Enable Notifications
               </label>
             </div>
 
             <div className="setting-group checkbox-group">
               <label>
-                <input type="checkbox" name="emailNotifications" checked={settings.emailNotifications} onChange={handleChange} />
+                <input
+                  type="checkbox"
+                  name="emailNotifications"
+                  checked={settings.emailNotifications}
+                  onChange={handleChange}
+                />
                 Send notifications via Email
               </label>
             </div>
@@ -201,7 +235,12 @@ export default function SettingsPage({ user }: Props) {
 
             <div className="setting-group">
               <label htmlFor="profileVisibility">Profile Visibility</label>
-              <select id="profileVisibility" name="profileVisibility" value={settings.profileVisibility} onChange={handleChange}>
+              <select
+                id="profileVisibility"
+                name="profileVisibility"
+                value={settings.profileVisibility}
+                onChange={handleChange}
+              >
                 <option value="public">Public</option>
                 <option value="private">Private</option>
               </select>
@@ -210,7 +249,12 @@ export default function SettingsPage({ user }: Props) {
             {user?.role === "customer" && (
               <div className="setting-group checkbox-group">
                 <label>
-                  <input type="checkbox" name="allowVendorMessaging" checked={settings.allowVendorMessaging} onChange={handleChange} />
+                  <input
+                    type="checkbox"
+                    name="allowVendorMessaging"
+                    checked={settings.allowVendorMessaging}
+                    onChange={handleChange}
+                  />
                   Allow messaging from vendors
                 </label>
               </div>
@@ -223,14 +267,24 @@ export default function SettingsPage({ user }: Props) {
 
             <div className="setting-group checkbox-group">
               <label>
-                <input type="checkbox" name="autoplayVideos" checked={settings.autoplayVideos} onChange={handleChange} />
+                <input
+                  type="checkbox"
+                  name="autoplayVideos"
+                  checked={settings.autoplayVideos}
+                  onChange={handleChange}
+                />
                 Auto-play Videos
               </label>
             </div>
 
             <div className="setting-group">
               <label htmlFor="language">Language</label>
-              <select id="language" name="language" value={settings.language} onChange={handleChange}>
+              <select
+                id="language"
+                name="language"
+                value={settings.language}
+                onChange={handleChange}
+              >
                 <option value="en">English</option>
                 <option value="fr">French</option>
                 <option value="es">Spanish</option>
@@ -242,15 +296,25 @@ export default function SettingsPage({ user }: Props) {
 
           {/* ── Actions ── */}
           <div className="settings-actions">
-            <button className="reset-button" onClick={handleReset} type="button">
+            <button
+              className="reset-button"
+              onClick={handleReset}
+              type="button"
+            >
               Reset to Defaults
             </button>
             <button
-              className={`save-button ${saveStatus === "saved" ? "saved" : ""} ${saveStatus === "error" ? "error" : ""}`}
+              className={`save-button ${
+                saveStatus === "saved" ? "saved" : ""
+              } ${saveStatus === "error" ? "error" : ""}`}
               onClick={handleSave}
               type="button"
             >
-              {saveStatus === "saved" ? "✓ Saved!" : saveStatus === "error" ? "✗ Failed" : "Save Settings"}
+              {saveStatus === "saved"
+                ? "✓ Saved!"
+                : saveStatus === "error"
+                ? "✗ Failed"
+                : "Save Settings"}
             </button>
           </div>
         </main>
