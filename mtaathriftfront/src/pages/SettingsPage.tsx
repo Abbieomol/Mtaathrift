@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import type { User } from "../types/types";
-import "./SettingsPage.css";
+import "../App.css";
 
 type Props = {
   user: User;

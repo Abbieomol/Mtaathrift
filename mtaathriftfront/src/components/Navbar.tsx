@@ -1,6 +1,17 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-import { FiHome, FiSearch, FiBell, FiHeart, FiShoppingCart, FiGrid, FiMenu, FiX, FiLogOut, FiSettings } from "react-icons/fi";
+import {
+  FiHome,
+  FiSearch,
+  FiBell,
+  FiHeart,
+  FiShoppingCart,
+  FiGrid,
+  FiMenu,
+  FiX,
+  FiLogOut,
+  FiSettings
+} from "react-icons/fi";
 import { fetchCart, fetchNotifications } from "../services/api";
 import type { User } from "../types/types";
 
@@ -22,6 +33,44 @@ const Navbar: React.FC<Props> = ({ user, onLogout }) => {
   const isActive = (path: string) =>
     location.pathname === path ? "nav-link active" : "nav-link";
 
+  
+  const getNavLinks = () => {
+    if (!user) return [];
+
+    if (user.role === "customer") {
+      return [
+        { to: "/search", icon: <FiSearch size={16} />, label: "Search" },
+        { to: "/wishlist", icon: <FiHeart size={16} />, label: "Wishlist" },
+        {
+          to: "/cart",
+          icon: <FiShoppingCart size={16} />,
+          label: <>Cart <Badge count={cartCount} /></>
+        },
+        {
+          to: "/notifications",
+          icon: <FiBell size={16} />,
+          label: <>Notifications <Badge count={notifCount} /></>
+        },
+        { to: "/customer", icon: <FiGrid size={16} />, label: "Dashboard" },
+        { to: "/settings", icon: <FiSettings size={16} />, label: "Settings" }
+      ];
+    }
+
+    if (user.role === "vendor") {
+      return [
+        { to: "/vendor", icon: <FiGrid size={16} />, label: "Dashboard" },
+        {
+          to: "/notifications",
+          icon: <FiBell size={16} />,
+          label: <>Notifications <Badge count={notifCount} /></>
+        },
+        { to: "/settings", icon: <FiSettings size={16} />, label: "Settings" }
+      ];
+    }
+
+    return [];
+  };
+
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (sidebarRef.current && !sidebarRef.current.contains(e.target as Node)) {
@@ -39,15 +88,15 @@ const Navbar: React.FC<Props> = ({ user, onLogout }) => {
       try {
         const cartData = await fetchCart();
         setCartCount(Array.isArray(cartData) ? cartData.length : 0);
-      } catch {
-        // cart endpoint not available
+      } catch (error) {
+        console.error("Failed to fetch cart data", error);
       }
 
       try {
         const notifData = await fetchNotifications();
         setNotifCount(Array.isArray(notifData) ? notifData.length : 0);
-      } catch {
-        // notifications endpoint not available yet
+      } catch (error) {
+        console.error("Failed to fetch notifications", error);
       }
     };
 
@@ -57,54 +106,52 @@ const Navbar: React.FC<Props> = ({ user, onLogout }) => {
   return (
     <>
       <nav className="navbar">
-        <Link to="/" className="navbar-brand">Mtaa<span>M</span></Link>
+        <Link to="/" className="navbar-brand">
+          Mtaa<span>M</span>
+        </Link>
 
         <div className="navbar-links">
-          <Link to="/" className={isActive("/")}><FiHome size={16} /> Home</Link>
+          <Link to="/" className={isActive("/")}>
+            <FiHome size={16} /> Home
+          </Link>
 
           {!user && (
             <>
-              <Link to="/login" className={isActive("/login")}>Log In</Link>
-              <Link to="/signup" className="btn btn-primary btn-sm">Sign Up</Link>
+              <Link to="/login" className={isActive("/login")}>
+                Log In
+              </Link>
+              <Link to="/signup" className="btn btn-primary btn-sm">
+                Sign Up
+              </Link>
             </>
           )}
 
-          {user?.role === "customer" && (
-            <>
-              <Link to="/search" className={isActive("/search")}><FiSearch size={16} /> Search</Link>
-              <Link to="/wishlist" className={isActive("/wishlist")}><FiHeart size={16} /> Wishlist</Link>
-              <Link to="/cart" className={isActive("/cart")}>
-                <FiShoppingCart size={16} /> Cart <Badge count={cartCount} />
-              </Link>
-              <Link to="/notifications" className={isActive("/notifications")}>
-                <FiBell size={16} /><Badge count={notifCount} />
-              </Link>
-              <Link to="/customer" className={isActive("/customer")}><FiGrid size={16} /> Dashboard</Link>
-              <Link to="/settings" className={isActive("/settings")}><FiSettings size={16} /> Settings</Link>
-            </>
-          )}
-
-          {user?.role === "vendor" && (
-            <>
-              <Link to="/vendor" className={isActive("/vendor")}><FiGrid size={16} /> Dashboard</Link>
-              <Link to="/notifications" className={isActive("/notifications")}>
-                <FiBell size={16} /><Badge count={notifCount} />
-              </Link>
-              <Link to="/settings" className={isActive("/settings")}><FiSettings size={16} /> Settings</Link>
-            </>
-          )}
+          
+          {getNavLinks().map((link, i) => (
+            <Link key={i} to={link.to} className={isActive(link.to)}>
+              {link.icon} {link.label}
+            </Link>
+          ))}
         </div>
 
         <div className="navbar-right">
           {user && (
             <>
               <span className="navbar-user">{user.email}</span>
-              <button className="logout-btn" onClick={onLogout} title="Log out">
+              <button
+                className="logout-btn"
+                onClick={onLogout}
+                title="Log out"
+              >
                 <FiLogOut size={16} />
               </button>
             </>
           )}
-          <button className="menu-btn" onClick={() => setSidebarOpen(true)} title="Toggle menu">
+          <button
+            className="menu-btn"
+            onClick={() => setSidebarOpen(true)}
+            title="Toggle menu"
+          >
             <FiMenu />
           </button>
         </div>
@@ -112,52 +159,56 @@ const Navbar: React.FC<Props> = ({ user, onLogout }) => {
 
       {sidebarOpen && (
         <>
-          <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
+          <div
+            className="sidebar-overlay"
+            onClick={() => setSidebarOpen(false)}
+          />
           <div className="sidebar" ref={sidebarRef}>
             <div className="sidebar-header">
-              <span className="navbar-brand">Mtaa<span>M</span></span>
-              <button className="btn-ghost" onClick={() => setSidebarOpen(false)} title="Close menu">
+              <span className="navbar-brand">
+                Mtaa<span>M</span>
+              </span>
+              <button
+                className="btn-ghost"
+                onClick={() => setSidebarOpen(false)}
+                title="Close menu"
+              >
                 <FiX size={18} />
               </button>
             </div>
 
-            <Link to="/" onClick={() => setSidebarOpen(false)}><FiHome /> Home</Link>
+            <Link to="/" onClick={() => setSidebarOpen(false)}>
+              <FiHome /> Home
+            </Link>
 
             {!user && (
               <>
-                <Link to="/login" onClick={() => setSidebarOpen(false)}>Log In</Link>
-                <Link to="/signup" onClick={() => setSidebarOpen(false)}>Sign Up</Link>
+                <Link to="/login" onClick={() => setSidebarOpen(false)}>
+                  Log In
+                </Link>
+                <Link to="/signup" onClick={() => setSidebarOpen(false)}>
+                  Sign Up
+                </Link>
               </>
             )}
 
-            {user?.role === "customer" && (
-              <>
-                <Link to="/search" onClick={() => setSidebarOpen(false)}><FiSearch /> Search</Link>
-                <Link to="/wishlist" onClick={() => setSidebarOpen(false)}><FiHeart /> Wishlist</Link>
-                <Link to="/cart" onClick={() => setSidebarOpen(false)}>
-                  <FiShoppingCart /> Cart <Badge count={cartCount} />
-                </Link>
-                <Link to="/notifications" onClick={() => setSidebarOpen(false)}>
-                  <FiBell /> Notifications <Badge count={notifCount} />
-                </Link>
-                <Link to="/customer" onClick={() => setSidebarOpen(false)}><FiGrid /> Dashboard</Link>
-                <Link to="/settings" onClick={() => setSidebarOpen(false)}><FiSettings /> Settings</Link>
-              </>
-            )}
-
-            {user?.role === "vendor" && (
-              <>
-                <Link to="/vendor" onClick={() => setSidebarOpen(false)}><FiGrid /> Dashboard</Link>
-                <Link to="/notifications" onClick={() => setSidebarOpen(false)}>
-                  <FiBell /> Notifications <Badge count={notifCount} />
-                </Link>
-                <Link to="/settings" onClick={() => setSidebarOpen(false)}><FiSettings /> Settings</Link>
-              </>
-            )}
+            
+            {getNavLinks().map((link, i) => (
+              <Link
+                key={i}
+                to={link.to}
+                onClick={() => setSidebarOpen(false)}
+              >
+                {link.icon} {link.label}
+              </Link>
+            ))}
 
             {user && (
               <button
-                onClick={() => { onLogout(); setSidebarOpen(false); }}
+                onClick={() => {
+                  onLogout();
+                  setSidebarOpen(false);
+                }}
                 className="logout-link"
               >
                 <FiLogOut /> Log Out
