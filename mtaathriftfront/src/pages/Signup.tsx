@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { signup } from "../services/api";
+import type { User } from "../types/types";
 
-const Signup: React.FC = () => {
+interface Props {
+  onLogin: (user: User) => void;
+}
+
+const Signup: React.FC<Props> = ({ onLogin }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
@@ -41,6 +46,13 @@ const Signup: React.FC = () => {
 
       if (response.status === 201) {
         const data = response.data;
+
+        localStorage.setItem("accessToken", data.access);
+        localStorage.setItem("refreshToken", data.refresh);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        onLogin(data.user);
+
         if (data.user?.role === "vendor") {
           navigate("/vendor");
         } else {
@@ -108,7 +120,7 @@ const Signup: React.FC = () => {
 
           <div className="form-group">
             <label>I want to</label>
-            <select name="role" className="form-select" value={formData.role} onChange={handleChange}>
+            <select name="role" className="form-select" value={formData.role} onChange={handleChange} title="Select your role">
               <option value="customer">Shop (Customer)</option>
               <option value="vendor">Sell (Vendor)</option>
             </select>

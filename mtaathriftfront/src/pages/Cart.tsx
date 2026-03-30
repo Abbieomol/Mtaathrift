@@ -77,10 +77,10 @@ const Cart: React.FC = () => {
                     value={item.quantity}
                     onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value) || 1)}
                   />
-                  <span style={{ fontWeight: 600, minWidth: 80, textAlign: "right" }}>
+                  <span className="cart-item-total">
                     KSh {(item.price * item.quantity).toLocaleString()}
                   </span>
-                  <button className="btn btn-ghost btn-sm" onClick={() => handleRemove(item.id)} style={{ color: "var(--danger)" }}>
+                  <button className="btn btn-ghost btn-sm btn-danger" onClick={() => handleRemove(item.id)} title="Remove item from cart">
                     <FiTrash2 size={16} />
                   </button>
                 </div>

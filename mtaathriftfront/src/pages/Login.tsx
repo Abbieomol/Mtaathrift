@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { login } from "../services/api";
+import type { User } from "../types/types";
 
-const Login: React.FC = () => {
+interface Props {
+  onLogin: (user: User) => void;
+}
+
+const Login: React.FC<Props> = ({ onLogin }) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,6 +22,13 @@ const Login: React.FC = () => {
     try {
       const response = await login({ email, password });
       const data = response.data;
+
+      localStorage.setItem("accessToken", data.access);
+      localStorage.setItem("refreshToken", data.refresh);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      onLogin(data.user);
+
       if (data.user?.role === "vendor") {
         navigate("/vendor");
       } else {

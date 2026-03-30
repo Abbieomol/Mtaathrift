@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
@@ -6,6 +7,7 @@ import Vendor from "./pages/Vendor";
 import Search from "./pages/Search";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import SettingsPage from "./pages/SettingsPage";
 import Notifications from "./pages/Notifications";
 import Wishlist from "./pages/Wishlist";
 import Cart from "./pages/Cart";
@@ -17,7 +19,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
 function App() {
-  const getUserFromStorage = (): User | null => {
+  const [user, setUser] = useState<User | null>(() => {
     try {
       const data = localStorage.getItem("user");
       if (!data || data === "undefined") return null;
@@ -25,14 +27,13 @@ function App() {
     } catch {
       return null;
     }
-  };
-
-  const user: User | null = getUserFromStorage();
+  });
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("user");
+    setUser(null);
     window.location.href = "/login";
   };
 
@@ -43,8 +44,8 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup onLogin={setUser} />} />
+        <Route path="/login" element={<Login onLogin={setUser} />} />
 
         <Route path="/search" element={
           <ProtectedRoute allowedRoles={["customer", "vendor"]}>
@@ -72,13 +73,19 @@ function App() {
 
         <Route path="/customer" element={
           <ProtectedRoute allowedRoles={["customer"]}>
-            <Customer />
+            <Customer user={user} />
           </ProtectedRoute>
         } />
 
         <Route path="/vendor" element={
           <ProtectedRoute allowedRoles={["vendor"]}>
-            <Vendor />
+            <Vendor user={user} />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/settings" element={
+          <ProtectedRoute allowedRoles={["customer", "vendor"]}>
+            <SettingsPage user={user!} onLogout={handleLogout} />
           </ProtectedRoute>
         } />
       </Routes>

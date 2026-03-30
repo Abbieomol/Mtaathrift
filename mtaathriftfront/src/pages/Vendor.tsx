@@ -3,8 +3,11 @@ import { FiPackage, FiDollarSign, FiMapPin, FiPlus, FiTrash2, FiCheck } from "re
 import { fetchProducts, fetchTodos, createTodo, updateTodo, deleteTodo, getProfile, updateProfile } from "../services/api";
 import type { User, Product, Todo } from "../types/types";
 
-const Vendor: React.FC = () => {
-  const [user, setUser] = useState<User | null>(null);
+interface Props {
+  user: User | null;
+}
+
+const Vendor: React.FC<Props> = ({ user }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodo, setNewTodo] = useState("");
@@ -13,18 +16,14 @@ const Vendor: React.FC = () => {
   const [locationInput, setLocationInput] = useState("");
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("user");
-      if (stored) setUser(JSON.parse(stored));
-    } catch { /* ignore */ }
-
+    if (!user) return;
     fetchProducts().then(setProducts).catch(() => {});
     fetchTodos().then(setTodos).catch(() => {});
     getProfile().then((data) => {
       setLocation(data.location || "");
       setLocationInput(data.location || "");
     }).catch(() => {});
-  }, []);
+  }, [user]);
 
   const handleAddTodo = async () => {
     if (!newTodo.trim()) return;
@@ -68,7 +67,6 @@ const Vendor: React.FC = () => {
       </div>
 
       <div className="dashboard">
-        {/* Stats */}
         <div className="stats-grid">
           <div className="stat-card">
             <div className="stat-icon green"><FiPackage size={20} /></div>
@@ -93,12 +91,11 @@ const Vendor: React.FC = () => {
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, alignItems: "start" }}>
-          {/* Todo List */}
+        <div className="dashboard-grid">
           <div className="panel">
             <div className="panel-header">
               <h2>Todo List</h2>
-              <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
+              <span className="panel-subtitle">
                 {completedTodos} of {todos.length} done
               </span>
             </div>
@@ -111,7 +108,7 @@ const Vendor: React.FC = () => {
                 onChange={(e) => setNewTodo(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleAddTodo()}
               />
-              <button className="btn btn-primary btn-sm" onClick={handleAddTodo}>
+              <button className="btn btn-primary btn-sm" onClick={handleAddTodo} title="Add a new task">
                 <FiPlus size={16} />
               </button>
             </div>
@@ -128,7 +125,7 @@ const Vendor: React.FC = () => {
                     onChange={() => handleToggleTodo(todo)}
                   />
                   <span className={todo.completed ? "completed" : ""}>{todo.title}</span>
-                  <button className="todo-delete" onClick={() => handleDeleteTodo(todo.id)}>
+                  <button className="todo-delete" onClick={() => handleDeleteTodo(todo.id)} title="Delete task">
                     <FiTrash2 size={14} />
                   </button>
                 </div>
@@ -136,7 +133,6 @@ const Vendor: React.FC = () => {
             </div>
           </div>
 
-          {/* Store Profile & Location */}
           <div className="panel">
             <div className="panel-header">
               <h2>Store Profile</h2>
@@ -150,34 +146,30 @@ const Vendor: React.FC = () => {
 
               <div className="profile-field">
                 <label>Role</label>
-                <div className="value" style={{ textTransform: "capitalize" }}>{user?.role || "—"}</div>
+                <div className="value capitalize">{user?.role || "—"}</div>
               </div>
 
               <div className="profile-field">
                 <label><FiMapPin size={12} style={{ marginRight: 4 }} />Store Location (optional)</label>
                 {!editingLocation ? (
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div className="location-display">
                     {location ? (
                       <span className="location-badge"><FiMapPin size={12} />{location}</span>
                     ) : (
-                      <span className="text-muted" style={{ fontSize: "0.85rem" }}>No location set</span>
+                      <span className="location-empty">No location set</span>
                     )}
-                    <button
-                      className="btn btn-ghost btn-sm"
-                      onClick={() => setEditingLocation(true)}
-                    >
+                    <button className="btn btn-ghost btn-sm" onClick={() => setEditingLocation(true)}>
                       {location ? "Edit" : "Add"}
                     </button>
                   </div>
                 ) : (
-                  <div style={{ display: "flex", gap: 8 }}>
+                  <div className="location-input-group">
                     <input
-                      className="form-input"
+                      className="form-input location-input"
                       placeholder="e.g. Gikomba Market, Nairobi"
                       value={locationInput}
                       onChange={(e) => setLocationInput(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && handleSaveLocation()}
-                      style={{ flex: 1 }}
                     />
                     <button className="btn btn-primary btn-sm" onClick={handleSaveLocation}>Save</button>
                     <button className="btn btn-ghost btn-sm" onClick={() => { setEditingLocation(false); setLocationInput(location); }}>Cancel</button>
@@ -188,7 +180,6 @@ const Vendor: React.FC = () => {
           </div>
         </div>
 
-        {/* Products */}
         {myProducts.length > 0 && (
           <div className="panel">
             <div className="panel-header">
@@ -201,9 +192,7 @@ const Vendor: React.FC = () => {
                     <h3 className="card-title">{p.name}</h3>
                     <p className="card-desc">{p.description}</p>
                     <div className="card-price">KSh {p.price.toLocaleString()}</div>
-                    <p style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
-                      Stock: {p.stock}
-                    </p>
+                    <p className="card-stock">Stock: {p.stock}</p>
                   </div>
                 </div>
               ))}

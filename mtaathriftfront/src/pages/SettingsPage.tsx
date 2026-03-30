@@ -1,8 +1,7 @@
-//import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
 import { useEffect, useState } from "react";
 import type { User } from "../types/types";
-import "../styles/App.css";
+import "../App.css";
+//import Sidebar from "../components/Sidebar";
 
 type Props = {
   user: User;
@@ -26,7 +25,7 @@ type Settings = {
 export default function SettingsPage({ user }: Props) {
   
   const [settings, setSettings] = useState<Settings>(() => {
-    const saved = localStorage.getItem(`settings-${user.username}`);
+    const saved = localStorage.getItem(`settings-${user.id}`);
 
     return saved
       ? JSON.parse(saved)
@@ -72,7 +71,7 @@ export default function SettingsPage({ user }: Props) {
   };
 
   const handleSave = () => {
-    localStorage.setItem(`settings-${user.username}`, JSON.stringify(settings));
+    localStorage.setItem(`settings-${user.id}`, JSON.stringify(settings));
     applySettings(settings);
     alert("Settings saved!");
   };
@@ -82,7 +81,7 @@ export default function SettingsPage({ user }: Props) {
       {/* <Navbar user={user} onLogout={onLogout} /> */}
 
       <div className="settings-wrapper">
-        <Sidebar />
+        {/* <Sidebar user={user} /> */}
 
         <main className="settings-main">
           <h2>Customize Your Experience</h2>

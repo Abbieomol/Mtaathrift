@@ -4,20 +4,19 @@ import { FiShoppingCart, FiHeart, FiPackage, FiSearch } from "react-icons/fi";
 import { fetchCart, getWishlist } from "../services/api";
 import type { User } from "../types/types";
 
-const Customer: React.FC = () => {
+interface Props {
+  user: User | null;
+}
+
+const Customer: React.FC<Props> = ({ user }) => {
   const [cartCount, setCartCount] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);
-  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("user");
-      if (stored) setUser(JSON.parse(stored));
-    } catch { /* ignore */ }
-
+    if (!user) return;
     fetchCart().then((data) => setCartCount(Array.isArray(data) ? data.length : 0)).catch(() => {});
     getWishlist().then((data) => setWishlistCount(Array.isArray(data) ? data.length : 0)).catch(() => {});
-  }, []);
+  }, [user]);
 
   return (
     <div className="page">
@@ -52,25 +51,25 @@ const Customer: React.FC = () => {
         </div>
 
         <div className="stats-grid">
-          <Link to="/search" style={{ textDecoration: "none" }}>
-            <div className="panel" style={{ cursor: "pointer", textAlign: "center", padding: "32px" }}>
-              <FiSearch size={28} style={{ color: "var(--primary)", marginBottom: 8 }} />
-              <h3 style={{ fontSize: "1rem", marginBottom: 4 }}>Browse Products</h3>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>Find thrift deals near you</p>
+          <Link to="/search" className="panel-link">
+            <div className="panel panel-clickable">
+              <FiSearch size={28} className="panel-icon-primary" />
+              <h3 className="panel-title">Browse Products</h3>
+              <p className="panel-subtitle">Find thrift deals near you</p>
             </div>
           </Link>
-          <Link to="/cart" style={{ textDecoration: "none" }}>
-            <div className="panel" style={{ cursor: "pointer", textAlign: "center", padding: "32px" }}>
-              <FiShoppingCart size={28} style={{ color: "var(--accent)", marginBottom: 8 }} />
-              <h3 style={{ fontSize: "1rem", marginBottom: 4 }}>My Cart</h3>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>Review and checkout</p>
+          <Link to="/cart" className="panel-link">
+            <div className="panel panel-clickable">
+              <FiShoppingCart size={28} className="panel-icon-accent" />
+              <h3 className="panel-title">My Cart</h3>
+              <p className="panel-subtitle">Review and checkout</p>
             </div>
           </Link>
-          <Link to="/wishlist" style={{ textDecoration: "none" }}>
-            <div className="panel" style={{ cursor: "pointer", textAlign: "center", padding: "32px" }}>
-              <FiHeart size={28} style={{ color: "var(--danger)", marginBottom: 8 }} />
-              <h3 style={{ fontSize: "1rem", marginBottom: 4 }}>My Wishlist</h3>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>Saved items for later</p>
+          <Link to="/wishlist" className="panel-link">
+            <div className="panel panel-clickable">
+              <FiHeart size={28} className="panel-icon-danger" />
+              <h3 className="panel-title">My Wishlist</h3>
+              <p className="panel-subtitle">Saved items for later</p>
             </div>
           </Link>
         </div>
