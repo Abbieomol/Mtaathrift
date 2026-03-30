@@ -7,8 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "predeploy": "npm run build",
-"deploy": "gh-pages -d dist"
+      "deploy-main": "rmdir /s /q ..\\index.html ..\\assets 2>nul || exit 0 && xcopy dist ..\\ /E /I /Y && git add ..\\index.html ..\\assets && git commit -m \"Deploy React app to main branch root\" && git push origin main"
 
   },
   "dependencies": {
