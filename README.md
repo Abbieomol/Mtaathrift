@@ -1,60 +1,90 @@
-# 🚀 Mtaa Market (MtaaThrifting)
+# Mtaa Market (MtaaThrifting)
 
-A full-stack e-commerce platform that connects vendors and customers for buying and selling thrifted items locally.
-
----
-
-## 📌 Features
-
-- User authentication (Signup/Login with JWT)
-- Role-based access (Customer & Vendor)
-- Product listing and browsing
-- Cart and wishlist functionality
-- Vendor product posting
-- Notifications system (in progress)
+A full-stack e-commerce platform that connects vendors and customers for buying and selling thrifted items locally. Built with Django REST Framework and React + TypeScript. It is a local thrifting marketplace where customers can browse, search, and purchase second-hand items from vendors in their area. The platform supports two user roles — **customers** and **vendors** — each with their own dashboard and features.
 
 ---
 
-## 🛠️ Tech Stack
+## Features
 
-### Frontend
+### Customer
 
-- React (TypeScript)
-- React Router
-- Axios
+- Browse and search products
+- Add items to cart and checkout
+- Save items to wishlist
+- View order history
+- Receive notifications
+- Customize app settings (theme, language, layout)
+
+### Vendor
+
+- Dashboard with product and sales overview
+- Add, edit, and manage product listings
+- Receive order and messaging notifications
+- Customize app settings
+
+### General
+
+- JWT-based authentication (login, signup, token refresh)
+- Role-based protected routes
+- Multi-language support (English, French, Spanish, Swahili, Arabic)
+- Dark / Light / Multicolor themes
+- Responsive design with mobile sidebar
+
+---
+
+## Tech Stack
 
 ### Backend
 
-- Django
-- Django REST Framework
-- Simple JWT Authentication
+- Python 3
+- Django & Django REST Framework
+- SimpleJWT for authentication
 - SQLite (development)
 
+### Frontend
+
+- React 18 + TypeScript
+- Vite
+- React Router v6
+- Axios
+- React Icons / Lucide React
+- React Toastify
+
 ---
 
-## 📁 Project Structure
+## Project Structure
 
-Mtaathrifting/
-│
+Mtaathrift/
 ├── backend/
-│   ├── accounts/
-│   ├── authapp/
-│   ├── products/
-│   ├── cart/
-│   ├── wishlist/
-│   └── manage.py
+│   ├── accounts/        # User auth and profiles
+│   ├── products/        # Product listings
+│   ├── cart/            # Cart management
+│   ├── wishlist/        # Wishlist management
+│   ├── orders/          # Order processing
+│   ├── notifications/   # Notification system
+│   ├── follow/          # Vendor following
+│   └── backend/         # Django project settings
 │
-├── mtaathriftfront/
-│   ├── src/
-│   ├── pages/
-│   ├── services/
-│   └── App.tsx
+└── mtaathriftfront/
+    ├── src/
+    │   ├── components/  # Navbar, Sidebar
+    │   ├── pages/       # Home, Customer, Vendor, Cart, Wishlist, etc.
+    │   ├── routes/      # ProtectedRoute
+    │   ├── services/    # API calls (api.ts)
+    │   ├── context/     # LanguageContext
+    │   ├── types/       # TypeScript types
+    │   └── App.tsx
+    └── index.html
 
 ---
 
-## ⚙️ Backend Setup (Django)
+## Backend Setup (Django)
 
+**Clone the repo**
+git clone <https://github.com/Abbieomol/Mtaathrift.git>
 cd backend
+
+**Create and activate a virtual environment**
 python -m venv .venv
 
 Windows:
@@ -63,30 +93,39 @@ Windows:
 Mac/Linux:
 source .venv/bin/activate
 
-pip install django djangorestframework djangorestframework-simplejwt pillow
+**Install dependencies**
+pip install -r requirements.txt
 
+**Run migrations**
 python manage.py makemigrations
 python manage.py migrate
 
+**Create superuser**
 python manage.py createsuperuser
 
+**Start the development server**
 python manage.py runserver
 
-Backend: <http://127.0.0.1:8000>
+Backend will be running at: <http://127.0.0.1:8000>
 
 ---
 
-## ⚙️ Frontend Setup (React)
+## Frontend Setup (React)
 
+**Navigate to the frontend folder**
 cd mtaathriftfront
-npm install
-npm run dev
 
-Frontend: <http://localhost:5173>
+**Install dependencies**
+npm install or yarn
+
+**Start the development server**
+npm run dev or yarn dev
+
+Frontend will be running at: <http://localhost:5173>
 
 ---
 
-## 🔐 Authentication
+## Authentication
 
 POST /auth/signup/
 POST /auth/login/
@@ -104,7 +143,7 @@ Response:
 
 ---
 
-## ⚠️ Common Errors
+## Common Errors
 
 Invalid login → check credentials  
 400 error → check request body  
@@ -112,6 +151,6 @@ Token error → clear localStorage
 
 ---
 
-## 👩‍💻 Author
+## Author
 
 Leila Omol
