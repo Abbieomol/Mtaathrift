@@ -1077,3 +1077,57 @@ body { transition: background 0.25s ease, color 0.25s ease; }
 .flex-between { display: flex; justify-content: space-between; align-items: center; }
 .gap-sm { gap: 8px; }
 .gap-md { gap: 16px; }
+ /* Empty Cart State */
+.cart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  gap: 16px;
+  text-align: center;
+}
+
+.cart-empty-icon {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f5f0eb 0%, #ede8e1 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.cart-empty-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2c1a0e;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.cart-empty-subtitle {
+  font-size: 0.95rem;
+  color: #9e8872;
+  margin: 0;
+  max-width: 260px;
+  line-height: 1.6;
+}
+
+.cart-empty-cta {
+  margin-top: 8px;
+  padding: 12px 28px;
+  background: #b5924c;
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  transition: background 0.2s;
+}
+
+.cart-empty-cta:hover {
+  background: #9a7a3a;
+}
