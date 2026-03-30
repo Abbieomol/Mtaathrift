@@ -14,7 +14,7 @@ interface LoginData {
 
 // Create axios instance
 const API = axios.create({
-  baseURL: "http://127.0.0.1:8000",
+  baseURL: "https://mtaabackend.onrender.com",
 });
 
 // Attach access token to every request except signup/login
